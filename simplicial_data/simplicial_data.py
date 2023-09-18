@@ -2,7 +2,7 @@ from torch_geometric.transforms import BaseTransform
 import torch
 from torch_geometric.data import Data
 from typing import Any
-from rips_lift import rips_lift
+from simplicial_data.rips_lift import rips_lift
 
 
 class SimplicialComplexData(Data):
@@ -60,6 +60,10 @@ class SimplicialTransform(BaseTransform):
 
         for k, v in inv_dict.items():
             sim_com_data[f'inv_{k}'] = v
+
+        for att in ['edge_attr', 'edge_index']:
+            if hasattr(sim_com_data, att):
+                sim_com_data.pop(att)
 
         return sim_com_data
 
