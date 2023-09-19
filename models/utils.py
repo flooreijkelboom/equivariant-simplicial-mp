@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+from torch_scatter import scatter_add
 
 
 class MessageLayer(nn.Module):
@@ -45,7 +46,7 @@ class UpdateLayer(nn.Module):
             state = torch.cat((state, bound_mes), dim=1)
 
         if torch.is_tensor(upadj_mes):
-            state = torch.cat((state, upadj_mes))
+            state = torch.cat((state, upadj_mes), dim=1)
 
         update = self.update_mlp(state)
         return update
