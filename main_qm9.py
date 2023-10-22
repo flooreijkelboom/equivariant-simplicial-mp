@@ -86,7 +86,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     # General parameters
-    parser.add_argument('--epochs', type=int, default=1,
+    parser.add_argument('--epochs', type=int, default=1000,
                         help='number of epochs')
     parser.add_argument('--batch_size', type=int, default=96,
                         help='batch size')
@@ -100,7 +100,7 @@ if __name__ == "__main__":
                         help='model type')
     parser.add_argument('--num_hidden', type=int, default=77,
                         help='hidden features')
-    parser.add_argument('--num_layers', type=int, default=1,
+    parser.add_argument('--num_layers', type=int, default=7,
                         help='number of layers')
     parser.add_argument('--act_fn', type=str, default='silu',
                         help='activation function')
@@ -118,11 +118,11 @@ if __name__ == "__main__":
     # Dataset arguments
     parser.add_argument('--dataset', type=str, default='qm9',
                         help='dataset')
-    parser.add_argument('--target_name', type=str, default='alpha',
+    parser.add_argument('--target_name', type=str, default='H',
                         help='regression task')
     parser.add_argument('--dim', type=int, default=2,
                         help='ASC dimension')
-    parser.add_argument('--dis', type=float, default=3.0,
+    parser.add_argument('--dis', type=float, default=4.0,
                         help='radius Rips complex')
     parser.add_argument('--seed', type=int, default=42,
                         help='random seed')
