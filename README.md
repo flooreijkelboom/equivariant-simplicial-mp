@@ -1,6 +1,6 @@
-# $\mathrm{E}(n)$ Equivariant Message Passing Simplicial Networks :small_red_triangle: :small_red_triangle_down:
+# E(n) Equivariant Message Passing Simplicial Networks :small_red_triangle: :small_red_triangle_down:
 
-Official code base for $\mathrm{E}(n)$ Equivariant Message Passing Simplicial Networks (ICML 2023). Work by Floor Eijkelboom, Rob Hesselink, and Erik Bekkers. 
+The official code base for $\mathrm{E}(n)$ Equivariant Message Passing Simplicial Networks (ICML 2023). Work by Floor Eijkelboom, Rob Hesselink, and Erik Bekkers. 
 
 arXiv link: https://arxiv.org/pdf/2305.07100.pdf
 
