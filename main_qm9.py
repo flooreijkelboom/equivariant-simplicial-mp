@@ -4,8 +4,7 @@ import wandb
 import copy
 from tqdm import tqdm
 from qm9.utils import calc_mean_mad
-from utils import get_model, get_loaders
-
+from utils import get_model, get_loaders, set_seed
 
 
 def main(args):
@@ -40,9 +39,10 @@ def main(args):
             mae = criterion(pred * mad + mean, batch.y)
             loss.backward()
 
+            torch.nn.utils.clip_grad_norm_(model.parameters(), args.gradient_clip)
+
             optimizer.step()
             epoch_mae_train += mae.item()
-
 
         model.eval()
         for _, batch in enumerate(val_loader):
@@ -94,18 +94,16 @@ if __name__ == "__main__":
                         help='num workers')
 
     # Model parameters
-    parser.add_argument('--model_name', type=str, default='egnn',
+    parser.add_argument('--model_name', type=str, default='empsn',
                         help='model')
     parser.add_argument('--max_com', type=str, default='1_2',  # e.g. 1_2
                         help='model type')
-    parser.add_argument('--num_hidden', type=int, default=128,
+    parser.add_argument('--num_hidden', type=int, default=77,
                         help='hidden features')
-    parser.add_argument('--num_layers', type=int, default=7,
+    parser.add_argument('--num_layers', type=int, default=1,
                         help='number of layers')
     parser.add_argument('--act_fn', type=str, default='silu',
                         help='activation function')
-    parser.add_argument('--aggr', type=str, default='add',
-                        help='aggregate function')
     parser.add_argument('--lift_type', type=str, default='rips',
                         help='lift type')
 
@@ -114,7 +112,7 @@ if __name__ == "__main__":
                         help='learning rate')
     parser.add_argument('--weight_decay', type=float, default=1e-16,
                         help='learning rate')
-    parser.add_argument('--gradient_clip', type=float, default=0.0,
+    parser.add_argument('--gradient_clip', type=float, default=1.0,
                         help='gradient clipping')
 
     # Dataset arguments
@@ -122,12 +120,15 @@ if __name__ == "__main__":
                         help='dataset')
     parser.add_argument('--target_name', type=str, default='alpha',
                         help='regression task')
-    parser.add_argument('--dim', type=int, default=1,
+    parser.add_argument('--dim', type=int, default=2,
                         help='ASC dimension')
-    parser.add_argument('--dis', type=float, default=0.1,
+    parser.add_argument('--dis', type=float, default=3.0,
                         help='radius Rips complex')
+    parser.add_argument('--seed', type=int, default=42,
+                        help='random seed')
 
     parsed_args = parser.parse_args()
     parsed_args.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+    set_seed(parsed_args.seed)
     main(parsed_args)

@@ -1,23 +1,12 @@
 import torch.nn as nn
+import random
+import numpy as np
+import os
+import torch
 from torch import Tensor
 from argparse import Namespace
 from torch_geometric.loader import DataLoader
 from typing import Tuple
-
-
-class TwoLayerMLP(nn.Module):
-    """Basic two layer perceptron."""
-
-    def __init__(self, num_hidden) -> None:
-        super().__init__()
-        self.model = nn.Sequential(
-            nn.Linear(num_hidden, num_hidden),
-            nn.SiLU(),
-            nn.Linear(num_hidden, num_hidden)
-        )
-
-    def forward(self, x: Tensor) -> Tensor:
-        return self.model(x)
 
 
 def get_model(args: Namespace) -> nn.Module:
@@ -36,6 +25,15 @@ def get_model(args: Namespace) -> nn.Module:
             num_out=num_out,
             num_layers=args.num_layers
         )
+    elif args.model_name == 'empsn':
+        from models.empsn import EMPSN
+        model = EMPSN(
+            num_input=num_input,
+            num_hidden=args.num_hidden,
+            num_out=num_out,
+            num_layers=args.num_layers,
+            max_com=args.max_com
+        )
     else:
         raise ValueError(f'Model type {args.model_name} not recognized.')
 
@@ -51,3 +49,16 @@ def get_loaders(args: Namespace) -> Tuple[DataLoader, DataLoader, DataLoader]:
         raise ValueError(f'Dataset {args.dataset} not recognized.')
 
     return train_loader, val_loader, test_loader
+
+
+def set_seed(seed: int = 42) -> None:
+    np.random.seed(seed)
+    random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    # When running on the CuDNN backend, two further options must be set
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    # Set a fixed value for the hash seed
+    os.environ["PYTHONHASHSEED"] = str(seed)
+    print(f"Random seed set as {seed}")
