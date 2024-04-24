@@ -10,6 +10,7 @@ class SimplicialComplexData(Data):
     Abstract simplicial complex class that generalises the pytorch geometric graph (Data). Adjacency tensors are stacked
     in the same fashion as the standard edge_index.
     """
+
     def __inc__(self, key: str, value: Any, *args, **kwargs) -> Any:
         if 'adj' in key:
             i, j = key[4], key[6]
@@ -25,9 +26,11 @@ class SimplicialComplexData(Data):
         elif key == 'x_0':
             return torch.tensor([getattr(self, f'x_0').size(0)])
         elif key == 'x_1':
-            return torch.tensor([getattr(self, f'x_1').size(0)])
+            return torch.tensor([getattr(self, f'x_0').size(0)])
         elif key == 'x_2':
-            return torch.tensor([getattr(self, f'x_2').size(0)])
+            return torch.tensor([getattr(self, f'x_0').size(0)])
+        elif key == 'x':
+            return torch.tensor([getattr(self, f'x').size(0)])
         else:
             return super().__inc__(key, value, *args, **kwargs)
 
